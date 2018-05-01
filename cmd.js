@@ -27,7 +27,7 @@ var argv = minimist(process.argv.slice(2), {
   }
 })
 
-var BASE_INSTALL_LINE = argv.yarn ? 'yarn add' : 'npm install --save'
+var BASE_INSTALL_LINE = argv.yarn ? 'yarn add -W' : 'npm install --save'
 
 if (argv.help) {
   runHelp()
@@ -121,6 +121,7 @@ function installShims ({ modules, overwrite }, done) {
   if (argv.yarn) {
     if (fs.existsSync('yarn.lock')) {
       let result = yarnlock.parse(fs.readFileSync('yarn.lock', 'utf8'))
+      result = result.replace(/\r/g, '') // handle windows CRLF
       if (result.type == 'success') {
         lockfile = result.object
       }
